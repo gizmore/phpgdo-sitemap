@@ -20,7 +20,7 @@ use GDO\Language\Method\SwitchLanguage;
  */
 final class Show extends MethodPage
 {
-	public function showInSitemap() { return false; }
+	public function showInSitemap() : bool { return false; }
 	
 	public function getTitleLangKey() { return 'link_sitemap'; }
 	
