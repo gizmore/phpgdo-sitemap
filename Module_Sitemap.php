@@ -10,8 +10,8 @@ use GDO\UI\GDT_Page;
  * Build a sitemap reachable from the bottom bar.
  * 
  * @author gizmore
- * @version 6.10
- * @since 6.10
+ * @version 7.0.1
+ * @since 6.10.0
  */
 final class Module_Sitemap extends GDO_Module
 {
@@ -23,10 +23,10 @@ final class Module_Sitemap extends GDO_Module
 	public function getConfig() : array
 	{
 	    return [
-	        GDT_Checkbox::make('bottom_bar')->initial('1'),
+	        GDT_Checkbox::make('hook_sidebar')->initial('1'),
 	    ];
 	}
-	public function cfgBottomBar() { return $this->getConfigValue('bottom_bar'); }
+	public function cfgBottomBar() { return $this->getConfigValue('hook_sidebar'); }
 	
 	#############
 	### Hooks ###
@@ -35,7 +35,7 @@ final class Module_Sitemap extends GDO_Module
 	{
 	    if ($this->cfgBottomBar())
 	    {
-	        GDT_Page::$INSTANCE->bottomNav->addField(GDT_Link::make('link_sitemap')->href($this->href('Show')));
+	        GDT_Page::instance()->bottomBar()->addField(GDT_Link::make('link_sitemap')->href($this->href('Show')));
 	    }
 	}
 

@@ -9,13 +9,11 @@ use GDO\Util\Strings;
 use GDO\User\GDO_User;
 use GDO\Core\Method;
 use GDO\Cronjob\MethodCronjob;
-use GDO\Language\Module_Language;
-use GDO\Language\Method\SwitchLanguage;
 
 /**
  * Show all available module methods.
  * @author gizmore
- * @version 6.11.0
+ * @version 7.0.1
  * @since 6.10.4
  */
 final class Show extends MethodPage
@@ -46,11 +44,11 @@ final class Show extends MethodPage
 		$methods = array();
 		$user = GDO_User::current();
 		Installer::loopMethods($module, function($entry, $fullpath, $args=null) use($module, &$methods, $user) {
-			$method = $module->getMethod(Strings::rsubstrTo($entry, '.php'));
-			foreach ($this->getSitemapMethods($module, $method, $user) as $method)
-			{
-				$methods[] = $method;
-			}
+// 			$method = $module->getMethod(Strings::rsubstrTo($entry, '.php'));
+// 			foreach ($this->getSitemapMethods($module, $method, $user) as $method)
+// 			{
+// 				$methods[] = $method;
+// 			}
 			$method = $module->getMethod(Strings::rsubstrTo($entry, '.php'));
 			if ($this->_showInSitemap($module, $method, $user))
 			{
@@ -82,7 +80,7 @@ final class Show extends MethodPage
 			return false;
 		}
 		
-		if (!$method->hasUserPermission($user))
+		if (true !== $method->checkPermission($user))
 		{
 			return false;
 		}
@@ -92,43 +90,18 @@ final class Show extends MethodPage
 	
 	private function initDefaultMethod(GDO_Module $module, Method $method, GDO_User $user)
 	{
-		try
+		$parameters = $method->gdoParameterCache();
+		foreach ($parameters as $gdt)
 		{
-			$method->init();
-			if ($parameters = $method->gdoParameterCache())
+			if (isset($gdt->notNull) && $gdt->notNull)
 			{
-				foreach ($parameters as $gdt)
+				if (!$gdt->getVar())
 				{
-					if ($gdt->notNull)
-					{
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-		catch (\Throwable $ex)
-		{
-		}
-		return false;
-	}
-	
-	private function getSitemapMethods(GDO_Module $module, Method $method, GDO_User $user)
-	{
-		$methods = [];
-		if ($module === Module_Language::instance())
-		{
-			if ($method instanceof SwitchLanguage)
-			{
-				foreach (Module_Language::instance()->cfgSupported() as $lang)
-				{
-					$m = SwitchLanguage::make();
-					$m->setGDOParamter('_lang', $lang->getISO());
-					$methods[] = $m;
+					return false;
 				}
 			}
 		}
-		return $methods;
+		return true;
 	}
 	
 }

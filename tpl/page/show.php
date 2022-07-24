@@ -1,4 +1,5 @@
 <?php
+namespace GDO\Sitemap\tpl\page;
 use GDO\UI\GDT_Link;
 use GDO\Core\ModuleLoader;
 use GDO\Core\Method;
@@ -11,12 +12,12 @@ foreach ($moduleMethods as $moduleName => $methods)
 	{
 		$module = ModuleLoader::instance()->getModule($moduleName);
 		echo "<ul>\n";
-		echo "<li><h4>{$module->displayName()}</h4>\n";
+		echo "<li><h4>{$module->renderName()}</h4>\n";
 		echo "<ul>\n";
 		foreach ($methods as $method)
 		{
 		    /** @var $method Method **/
-			$link = GDT_Link::make()->labelRaw($method->getDescription())->href($method->methodHref());
+			$link = GDT_Link::make()->labelRaw($method->getMethodDescription())->href($method->href());
 			echo "<li>{$link->renderCell()}</li>";
 		}
 		echo "</ul>\n";
