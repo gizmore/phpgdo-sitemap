@@ -18,7 +18,7 @@ use GDO\Cronjob\MethodCronjob;
  */
 final class Show extends MethodPage
 {
-	public function showInSitemap() : bool { return false; }
+	public function isShownInSitemap() : bool { return false; }
 	
 	public function getTitleLangKey() { return 'link_sitemap'; }
 	
