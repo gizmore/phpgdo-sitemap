@@ -18,7 +18,7 @@ foreach ($moduleMethods as $moduleName => $methods)
 		{
 		    /** @var $method Method **/
 			$link = GDT_Link::make()->labelRaw($method->getMethodDescription())->href($method->href());
-			echo "<li>{$link->renderCell()}</li>";
+			echo "<li>{$link->renderHTML()}</li>";
 		}
 		echo "</ul>\n";
 		echo "</ul>\n";
