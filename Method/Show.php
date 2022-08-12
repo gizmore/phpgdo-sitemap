@@ -32,7 +32,14 @@ final class Show extends MethodPage
 	private function getModuleMethods()
 	{
 		$moduleMethods = array();
-		foreach (ModuleLoader::instance()->getEnabledModules() as $module)
+		
+		$modules = ModuleLoader::instance()->getEnabledModules();
+		
+		usort($modules, function(GDO_Module $a, GDO_Module $b) {
+			return Strings::compare($a->renderName(), $b->renderName());
+		});
+		
+		foreach ($modules as $module)
 		{
 			$moduleMethods[$module->getName()] = $this->getModuleMethodsB($module);
 		}
@@ -60,7 +67,7 @@ final class Show extends MethodPage
 	
 	private function _showInSitemap(GDO_Module $module, Method $method, GDO_User $user)
 	{
-		if (!$method->showInSitemap())
+		if (!$method->isShownInSitemap())
 		{
 			return false;
 		}
