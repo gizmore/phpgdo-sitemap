@@ -1,56 +1,61 @@
 <?php
 namespace GDO\Sitemap\Method;
 
-use GDO\UI\MethodPage;
-use GDO\Core\ModuleLoader;
 use GDO\Core\GDO_Module;
-use GDO\Install\Installer;
-use GDO\Util\Strings;
-use GDO\User\GDO_User;
 use GDO\Core\Method;
+use GDO\Core\ModuleLoader;
 use GDO\Cronjob\MethodCronjob;
+use GDO\Install\Installer;
+use GDO\UI\MethodPage;
+use GDO\User\GDO_User;
+use GDO\Util\Strings;
 
 /**
  * Show all available module methods.
- * @author gizmore
+ *
  * @version 7.0.1
  * @since 6.10.4
+ * @author gizmore
  */
 final class Show extends MethodPage
 {
-	public function isShownInSitemap() : bool { return false; }
-	
+
 	public function getTitleLangKey() { return 'link_sitemap'; }
-	
+
+	public function isShownInSitemap(): bool { return false; }
+
+
 	protected function getTemplateVars()
 	{
 		return [
 			'moduleMethods' => $this->getModuleMethods(),
 		];
 	}
-	
+
 	private function getModuleMethods()
 	{
-		$moduleMethods = array();
-		
+		$moduleMethods = [];
+
 		$modules = ModuleLoader::instance()->getEnabledModules();
-		
-		usort($modules, function(GDO_Module $a, GDO_Module $b) {
+
+		usort($modules, function (GDO_Module $a, GDO_Module $b)
+		{
 			return Strings::compare($a->renderName(), $b->renderName());
 		});
-		
+
 		foreach ($modules as $module)
 		{
 			$moduleMethods[$module->getName()] = $this->getModuleMethodsB($module);
 		}
 		return $moduleMethods;
 	}
-	
+
 	private function getModuleMethodsB(GDO_Module $module)
 	{
-		$methods = array();
+		$methods = [];
 		$user = GDO_User::current();
-		Installer::loopMethods($module, function($entry, $fullpath, $args=null) use($module, &$methods, $user) {
+		Installer::loopMethods($module, function ($entry, $fullpath, $args = null) use ($module, &$methods, $user)
+		{
 // 			$method = $module->getMethod(Strings::rsubstrTo($entry, '.php'));
 // 			foreach ($this->getSitemapMethods($module, $method, $user) as $method)
 // 			{
@@ -64,37 +69,37 @@ final class Show extends MethodPage
 		});
 		return $methods;
 	}
-	
+
 	private function _showInSitemap(GDO_Module $module, Method $method, GDO_User $user)
 	{
 		if (!$method->isShownInSitemap())
 		{
 			return false;
 		}
-		
+
 		if ($method instanceof MethodCronjob)
 		{
 			return false;
 		}
-		
+
 		if ($method->isAjax())
 		{
 			return false;
 		}
-		
+
 		if (!$this->initDefaultMethod($module, $method, $user))
 		{
 			return false;
 		}
-		
+
 		if (true !== $method->checkPermission($user))
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	private function initDefaultMethod(GDO_Module $module, Method $method, GDO_User $user)
 	{
 		$parameters = $method->gdoParameterCache();
@@ -110,5 +115,5 @@ final class Show extends MethodPage
 		}
 		return true;
 	}
-	
+
 }
