@@ -13,26 +13,26 @@ use GDO\Util\Strings;
 /**
  * Show all available module methods.
  *
- * @version 7.0.1
+ * @version 7.0.3
  * @since 6.10.4
  * @author gizmore
  */
 final class Show extends MethodPage
 {
 
-	public function getTitleLangKey() { return 'link_sitemap'; }
+	public function getTitleLangKey(): string { return 'link_sitemap'; }
 
 	public function isShownInSitemap(): bool { return false; }
 
 
-	protected function getTemplateVars()
+	protected function getTemplateVars(): array
 	{
 		return [
 			'moduleMethods' => $this->getModuleMethods(),
 		];
 	}
 
-	private function getModuleMethods()
+	private function getModuleMethods(): array
 	{
 		$moduleMethods = [];
 
@@ -50,7 +50,7 @@ final class Show extends MethodPage
 		return $moduleMethods;
 	}
 
-	private function getModuleMethodsB(GDO_Module $module)
+	private function getModuleMethodsB(GDO_Module $module): array
 	{
 		$methods = [];
 		$user = GDO_User::current();
@@ -70,7 +70,7 @@ final class Show extends MethodPage
 		return $methods;
 	}
 
-	private function _showInSitemap(GDO_Module $module, Method $method, GDO_User $user)
+	private function _showInSitemap(GDO_Module $module, Method $method, GDO_User $user): bool
 	{
 		if (!$method->isShownInSitemap())
 		{
@@ -100,7 +100,7 @@ final class Show extends MethodPage
 		return true;
 	}
 
-	private function initDefaultMethod(GDO_Module $module, Method $method, GDO_User $user)
+	private function initDefaultMethod(GDO_Module $module, Method $method, GDO_User $user): bool
 	{
 		$parameters = $method->gdoParameterCache();
 		foreach ($parameters as $gdt)
