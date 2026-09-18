@@ -92,7 +92,9 @@ final class Show extends MethodPage
 			return false;
 		}
 
-		if (true !== $method->checkPermission($user))
+		// checkPermission() returns null on success, never boolean true.  The
+		// non-silent call also attached every rejected method error to this page.
+		if (null !== $method->checkPermission($user, true))
 		{
 			return false;
 		}
@@ -102,7 +104,9 @@ final class Show extends MethodPage
 
 	private function initDefaultMethod(GDO_Module $module, Method $method, GDO_User $user): bool
 	{
-		$parameters = $method->gdoParameterCache();
+		// Do not compose request-bound parameter fields here: sitemap probing must
+		// not validate unrelated URL parameters and leak their errors into itself.
+		$parameters = $method->gdoParameters();
 		foreach ($parameters as $gdt)
 		{
 			if (isset($gdt->notNull) && $gdt->notNull)
